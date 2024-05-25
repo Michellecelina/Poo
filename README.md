@@ -1,54 +1,62 @@
-jogador1 = input("Digite o nome do jogador 1: ")
-jogador2 = input("Digite o nome do jogador 2: ")
-print("Segue as regras para o jogo:\nDigite 1 para pedra\nDigite 2 para papel\nDigite 3 para tesoura")
-jogadasj1 = [0,0,0]
-jogadasj2 = [0,0,0]
-placarj1 = 0
-placarj2 = 0 
-for c in range(0,3,1):
-    jogadasj1[c] = int(input(f'Rodada {c+1} do jogador {jogador1}: '))
-    if jogadasj1[c] <1 or jogadasj1[c]>3:
-        while jogadasj1[c]<1 or jogadasj1[c]>3:
-            print('número inválido! Tente outra vez')
-            jogadasj1[c] = int(input(f'Rodada {c+1} do jogador {jogador1}: '))
 
-    jogadasj2[c] = int(input(f'Rodada {c+1} do jogador {jogador2}: '))
-    if jogadasj1[c] <1 or jogadasj1[c]>3:
-        while jogadasj1[c]<1 or jogadasj1[c]>3:
-            print('número inválido! Tente outra vez')
-            jogadasj1[c] = int(input(f'Rodada {c+1} do jogador {jogador1}: '))
+import random
 
-for c in range(0,3,1):
-    print(f"Resultado rodada {c+1}")
-    #condições para o jogador 1 ganhar
-    if jogadasj1[c] == 1 and jogadasj2[c]==3:
-        print(f'{jogador1} - pedra x {jogador2} - tesoura')
-        print(f'{jogador1} ganhou')
-        placarj1 += 1
-    elif jogadasj1[c] == 2 and jogadasj2[c]==1:
-        print(f'{jogador1} - papel x {jogador2} - pedra')
-        print(f'{jogador1} ganhou')
-        placarj1 += 1
-    elif jogadasj1[c] == 3 and jogadasj2[c]==2:
-        print(f'{jogador1} - tesoura x {jogador2} - papel')
-        print(f'{jogador1} ganhou')
-        placarj1 += 1
+class Jogador:
+    def __init__(self, nome):
+        self.nome = nome
+        self.pontos = 0
 
-  
-    if jogadasj1[c] == 3 and jogadasj2[c]==1:
-        print(f'{jogador1} - tesoura x {jogador2} - pedra')
-        print(f'{jogador2} ganhou')
-        placarj2 += 1
-    elif jogadasj1[c] == 1 and jogadasj2[c]==2:
-        print(f'{jogador1} - pedra x {jogador2} - papel')
-        print(f'{jogador2} ganhou')
-        placarj2 += 1
-    elif jogadasj1[c] == 2 and jogadasj2[c]==3:
-        print(f'{jogador1} - papel x {jogador2} - tesoura')
-        print(f'{jogador2} ganhou')
-        placarj2 += 1
+    def adicionar_ponto(self):
+        self.pontos += 1
 
-  
-    if placarj1 == 2 or placarj2 == 2:
+class Jogo:
+    def __init__(self, jogador1, jogador2):
+        self.jogador1 = jogador1
+        self.jogador2 = jogador2
+        self.opcoes = ['pedra', 'papel', 'tesoura']
+
+    def jogar_rodada(self):
+        escolha_jogador1 = input(f"{self.jogador1.nome}, escolha pedra, papel ou tesoura: ").lower()
+        escolha_jogador2 = input(f"{self.jogador2.nome}, escolha pedra, papel ou tesoura: ").lower()
+
+        if escolha_jogador1 not in self.opcoes or escolha_jogador2 not in self.opcoes:
+            print("Escolha inválida. Tente novamente.")
+            return self.jogar_rodada()
+
+        if escolha_jogador1 == escolha_jogador2:
+            print("Empate!")
+        elif (escolha_jogador1 == 'pedra' and escolha_jogador2 == 'tesoura') or \
+             (escolha_jogador1 == 'papel' and escolha_jogador2 == 'pedra') or \
+             (escolha_jogador1 == 'tesoura' and escolha_jogador2 == 'papel'):
+            print(f"{self.jogador1.nome} venceu esta rodada!")
+            self.jogador1.adicionar_ponto()
+        else:
+            print(f"{self.jogador2.nome} venceu esta rodada!")
+            self.jogador2.adicionar_ponto()
+
+    def verificar_vencedor(self):
+        if self.jogador1.pontos >= 2:
+            print(f"{self.jogador1.nome} ganhou o jogo com {self.jogador1.pontos} pontos!")
+        elif self.jogador2.pontos >= 2:
+            print(f"{self.jogador2.nome} ganhou o jogo com {self.jogador2.pontos} pontos!")
+        else:
+            print("Jogo encerrado.")
+
+# Inicialização dos jogadores
+nome_jogador1 = input("Digite o nome do Jogador 1: ")
+nome_jogador2 = input("Digite o nome do Jogador 2: ")
+
+jogador1 = Jogador(nome_jogador1)
+jogador2 = Jogador(nome_jogador2)
+
+# Inicialização do jogo
+jogo = Jogo(jogador1, jogador2)
+
+# Jogo de três rodadas
+for _ in range(3):
+    jogo.jogar_rodada()
+    if jogador1.pontos >= 2 or jogador2.pontos >= 2:
         break
-print(f"Placar final: {jogador1} {placarj1} x {placarj2} {jogador2}")
+
+# Verifica o vencedor
+jogo.verificar_vencedor()

@@ -3,7 +3,7 @@ import random
 
 class Jogador:
     def __init__(self, nome):
-        self.nome = nome
+        self.nome = nomem
         self.pontos = 0
 
     def adicionar_ponto(self):
